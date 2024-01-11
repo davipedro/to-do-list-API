@@ -3,7 +3,7 @@ package br.com.todolistAPI.task;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Entity(name = "task")
 @Table(name = "task")
@@ -12,28 +12,24 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @Column(unique = true)
-    private UUID taskId;
-    @Column(unique = true)
     private String title;
+    @Column(name = "description")
     private String description;
+    @Column(name = "creation_date")
     private LocalDate creationDate;
+    @Column(name = "conclusion_date")
     private LocalDate conclusionDate;
     private LocalDate lastUpdate;
 
     public Task(TaskDTO taskDTO){
-        this.taskId = UUID.randomUUID();
-        this.title = taskDTO.getTitle();
-        this.description = taskDTO.getDescription();
+        this.title = taskDTO.title();
+        this.description = taskDTO.description();
         this.creationDate = LocalDate.now();
-        this.conclusionDate = taskDTO.getConclusionDate();
+        this.conclusionDate = taskDTO.conclusionDate();
         this.lastUpdate = LocalDate.now();
     }
 
     public Task(){}
-
-    public UUID getTaskId() {
-        return taskId;
-    }
 
     public Long getId() {
         return id;
@@ -43,15 +39,15 @@ public class Task {
         return title;
     }
 
-    public void setTitle(String titulo) {
-        this.title = titulo;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String descricao) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -63,8 +59,8 @@ public class Task {
         return conclusionDate;
     }
 
-    public void setConclusionDate(LocalDate dataConclusao) {
-        this.conclusionDate = dataConclusao;
+    public void setConclusionDate(LocalDate conclusionDate) {
+        this.conclusionDate = conclusionDate;
     }
 
     public LocalDate getLastUpdate() {

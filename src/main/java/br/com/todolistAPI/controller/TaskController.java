@@ -7,8 +7,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,12 +16,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/task")
+@RequestMapping("/tasks/")
 public class TaskController {
+
     @Autowired
     TaskService taskService = new TaskService();
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<Task>> getAllTasks(){
         List<Task> tasks = taskService.getAllTasks();
         if(tasks.isEmpty()){
@@ -32,16 +31,16 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
-    @GetMapping("/{title}")
-    public ResponseEntity<Task> getByTitle(@PathVariable String title){
-        Optional<Task> taskByTitle = taskService.getByTitle(title);
-        Task task = taskByTitle.orElseThrow(() -> new ResponseStatusException(
+    @GetMapping("/title")
+    public ResponseEntity<List<Task>> getByTitle(@RequestParam (value = "q") String title){
+        Optional<List<Task>> optionalTasks = taskService.getByTitle(title);
+        List<Task> task = optionalTasks.orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Task not found"));
-        return ResponseEntity.ok().body(task);
+        return ResponseEntity.ok(task);
     }
 
-    @GetMapping("/{creationDate}")
-    public ResponseEntity<Task> getByCreationDate(@PathVariable LocalDate creationDate){
+    @GetMapping("/creation_date")
+    public ResponseEntity<Task> getByCreationDate(@RequestParam (value = "q") LocalDate creationDate){
         Optional<Task> taskByCreationDate = taskService.getByCreationDate(creationDate);
         Task task = taskByCreationDate.orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Task not found"));
@@ -49,46 +48,25 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTask(@PathVariable UUID id){
-        try {
-            taskService.deleteTask(id);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    public ResponseEntity<String> deleteTask(@PathVariable Long id){
+        if (taskService.deleteTask(id)){
+            return ResponseEntity.ok("Deleted successfully");
         }
-        return ResponseEntity.ok("Deleted successfully");
+        return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/")
-    public ResponseEntity<Object> createTask(@RequestBody @Valid TaskDTO taskDTO, BindingResult bindingResult){
-        if (bindingResult.hasErrors()){
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "The task could not be created \n Validation error:" + errors);
-        }
+    @PostMapping
+    public ResponseEntity<Object> createTask(@RequestBody @Valid TaskDTO taskDTO){
         taskService.createTask(taskDTO);
         return ResponseEntity.status(201).build();
     }
 
-    @PatchMapping
-    public ResponseEntity<String> patchTask(@RequestBody @Valid TaskDTO taskDTO, BindingResult bindingResult){
-        if (bindingResult.hasErrors()){
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "The task could not be updated \n Validation error:" + errors);
-        }
-        taskService.patchTask(taskDTO);
-        return ResponseEntity.ok("Updated successfully");
-    }
-
     @PutMapping
-    public ResponseEntity<String> putTask(@RequestBody @Valid TaskDTO taskDTO, BindingResult bindingResult){
-        if (bindingResult.hasErrors()){
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "The task could not be updated \n Validation error:" + errors);
+    public ResponseEntity<String> putTask(@RequestBody @Valid TaskDTO taskDTO){
+        if (taskService.putTask(taskDTO)){
+            return ResponseEntity.ok("Updated successfully");
         }
-        taskService.putTask(taskDTO);
-        return ResponseEntity.ok("Updated successfully");
+        return ResponseEntity.notFound().build();
     }
 
 
