@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class TaskService {
@@ -20,7 +18,7 @@ public class TaskService {
        return taskRepository.findAll();
     }
 
-    public Optional<Task> getByTitle(String title){
+    public Optional<List<Task>> getByTitle(String title){
         return taskRepository.findByTitleContainingIgnoreCase(title);
     }
 
@@ -33,42 +31,32 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public void patchTask(TaskDTO taskDTO){
-        Optional<Task> optionalTask =  taskRepository.findByTaskId(taskDTO.getId());
+    public boolean putTask(TaskDTO taskDTO){
+        Optional<Task> optionalTask =  taskRepository.findById(taskDTO.id());
 
-        Task task = optionalTask.orElseThrow(() -> new NoSuchElementException("Task não encontrada"));
-
-        task.setTitle(taskDTO.getTitle());
-        if(taskDTO.getDescription() != null){
-            task.setDescription(taskDTO.getDescription());
+        if (optionalTask.isEmpty()) {
+            return false;
         }
-        if(taskDTO.getConclusionDate() != null){
-            task.setConclusionDate(taskDTO.getConclusionDate());
-        }
+        Task task = optionalTask.get();
+        task.setTitle(taskDTO.title());
+        task.setDescription(taskDTO.description());
+        task.setConclusionDate(taskDTO.conclusionDate());
         task.setLastUpdate(LocalDate.now());
 
         taskRepository.save(task);
+        return true;
     }
 
-    public void putTask(TaskDTO taskDTO){
-        Optional<Task> optionalTask =  taskRepository.findByTaskId(taskDTO.getId());
+    public boolean deleteTask(Long taskId){
+        Optional<Task> optionalTask =  taskRepository.findById(taskId);
 
-        Task task = optionalTask.orElseThrow(() -> new NoSuchElementException("Task não encontrada"));
-
-        task.setTitle(taskDTO.getTitle());
-        task.setDescription(taskDTO.getDescription());
-        task.setConclusionDate(taskDTO.getConclusionDate());
-        task.setLastUpdate(LocalDate.now());
-
-        taskRepository.save(task);
-    }
-
-    public void deleteTask(UUID taskId){
-        Optional<Task> optionalTask =  taskRepository.findByTaskId(taskId);
-
-        Task task = optionalTask.orElseThrow(() -> new NoSuchElementException("Task não encontrada"));
+        if (optionalTask.isEmpty()) {
+            return false;
+        }
+        Task task = optionalTask.get();
 
         taskRepository.deleteById(task.getId());
+        return true;
     }
 
 }
