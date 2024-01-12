@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/tasks/")
+@RequestMapping("/tasks")
 public class TaskController {
 
     @Autowired
@@ -40,15 +40,15 @@ public class TaskController {
     }
 
     @GetMapping("/creation_date")
-    public ResponseEntity<Task> getByCreationDate(@RequestParam (value = "q") LocalDate creationDate){
-        Optional<Task> taskByCreationDate = taskService.getByCreationDate(creationDate);
-        Task task = taskByCreationDate.orElseThrow(() -> new ResponseStatusException(
+    public ResponseEntity<List<Task>> getByCreationDate(@RequestParam (value = "q") LocalDate creationDate){
+        Optional<List<Task>> taskByCreationDate = taskService.getByCreationDate(creationDate);
+        List<Task> task = taskByCreationDate.orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Task not found"));
         return ResponseEntity.ok().body(task);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTask(@PathVariable Long id){
+    public ResponseEntity<String> deleteTask(@PathVariable UUID id){
         if (taskService.deleteTask(id)){
             return ResponseEntity.ok("Deleted successfully");
         }
@@ -61,9 +61,9 @@ public class TaskController {
         return ResponseEntity.status(201).build();
     }
 
-    @PutMapping
-    public ResponseEntity<String> putTask(@RequestBody @Valid TaskDTO taskDTO){
-        if (taskService.putTask(taskDTO)){
+    @PutMapping("/{taskId}")
+    public ResponseEntity<String> putTask(@PathVariable UUID taskId, @RequestBody @Valid TaskDTO taskDTO){
+        if (taskService.putTask(taskId, taskDTO)){
             return ResponseEntity.ok("Updated successfully");
         }
         return ResponseEntity.notFound().build();

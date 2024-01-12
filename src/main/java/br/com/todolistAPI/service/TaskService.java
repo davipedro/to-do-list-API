@@ -5,10 +5,12 @@ import br.com.todolistAPI.task.TaskDTO;
 import br.com.todolistAPI.task.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class TaskService {
@@ -22,17 +24,17 @@ public class TaskService {
         return taskRepository.findByTitleContainingIgnoreCase(title);
     }
 
-    public Optional<Task> getByCreationDate(LocalDate creationDate){
+    public Optional<List<Task>> getByCreationDate(LocalDate creationDate){
         return taskRepository.findByCreationDate(creationDate);
     }
 
     public void createTask(TaskDTO taskToSave){
-        Task task = new Task(taskToSave);
+        Task task = new Task(taskToSave, LocalDate.now());
         taskRepository.save(task);
     }
 
-    public boolean putTask(TaskDTO taskDTO){
-        Optional<Task> optionalTask =  taskRepository.findById(taskDTO.id());
+    public boolean putTask(UUID taskId, TaskDTO taskDTO){
+        Optional<Task> optionalTask =  taskRepository.findById(taskId);
 
         if (optionalTask.isEmpty()) {
             return false;
@@ -47,15 +49,13 @@ public class TaskService {
         return true;
     }
 
-    public boolean deleteTask(Long taskId){
-        Optional<Task> optionalTask =  taskRepository.findById(taskId);
-
-        if (optionalTask.isEmpty()) {
+    @Transactional
+    public boolean deleteTask(UUID taskId){
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        if (optionalTask.isEmpty()){
             return false;
         }
-        Task task = optionalTask.get();
-
-        taskRepository.deleteById(task.getId());
+        taskRepository.deleteById(optionalTask.get().getId());
         return true;
     }
 
