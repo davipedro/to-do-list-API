@@ -9,5 +9,7 @@ import java.util.UUID;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
         Optional<List<Task>> findByTitleContainingIgnoreCase(String title);
-        Optional<Task> findByCreationDate(LocalDate creationDate);
+        Optional<List<Task>> findByCreationDate(LocalDate creationDate);
+        Optional<Task> findById(UUID taskId);
+        void deleteById(UUID taskId);
 }

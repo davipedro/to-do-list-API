@@ -3,14 +3,14 @@ package br.com.todolistAPI.task;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.UUID;
 
 @Entity(name = "task")
 @Table(name = "task")
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     @Column(unique = true)
     private String title;
     @Column(name = "description")
@@ -21,17 +21,25 @@ public class Task {
     private LocalDate conclusionDate;
     private LocalDate lastUpdate;
 
-    public Task(TaskDTO taskDTO){
+    public Task(TaskDTO taskDTO, LocalDate currentDate){
         this.title = taskDTO.title();
         this.description = taskDTO.description();
-        this.creationDate = LocalDate.now();
+        this.creationDate = currentDate;
         this.conclusionDate = taskDTO.conclusionDate();
+        this.lastUpdate = LocalDate.now();
+    }
+
+    public Task(String title, String description,LocalDate currentDate ,LocalDate conclusionDate){
+        this.title = title;
+        this.description = description;
+        this.creationDate = currentDate;
+        this.conclusionDate = conclusionDate;
         this.lastUpdate = LocalDate.now();
     }
 
     public Task(){}
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
