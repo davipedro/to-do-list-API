@@ -1,5 +1,6 @@
 package br.com.todolistAPI.service;
 
+import br.com.todolistAPI.exceptions.TaskNotFoundException;
 import br.com.todolistAPI.task.Task;
 import br.com.todolistAPI.task.TaskDTO;
 import br.com.todolistAPI.task.TaskRepository;
@@ -33,13 +34,9 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public boolean putTask(UUID taskId, TaskDTO taskDTO){
-        Optional<Task> optionalTask =  taskRepository.findById(taskId);
+    public boolean putTask(UUID taskId, TaskDTO taskDTO) throws TaskNotFoundException {
+        Task task =  taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
 
-        if (optionalTask.isEmpty()) {
-            return false;
-        }
-        Task task = optionalTask.get();
         task.setTitle(taskDTO.title());
         task.setDescription(taskDTO.description());
         task.setConclusionDate(taskDTO.conclusionDate());
