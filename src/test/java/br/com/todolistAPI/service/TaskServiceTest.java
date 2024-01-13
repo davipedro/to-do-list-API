@@ -1,5 +1,6 @@
 package br.com.todolistAPI.service;
 
+import br.com.todolistAPI.exceptions.TaskNotFoundException;
 import br.com.todolistAPI.task.Task;
 import br.com.todolistAPI.task.TaskDTO;
 import br.com.todolistAPI.task.TaskRepository;
@@ -146,7 +147,7 @@ class TaskServiceTest {
     }
 
     @Test
-    void shouldUpdateTaskSearchingByID() {
+    void shouldUpdateTaskSearchingByID() throws TaskNotFoundException {
         LocalDate conclusionDate = LocalDate.of(2014,1,12);
 
         Task taskBeforeSave = new Task("title","description",LocalDate.now(), conclusionDate);

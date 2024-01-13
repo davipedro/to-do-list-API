@@ -1,5 +1,6 @@
 package br.com.todolistAPI.controller;
 
+import br.com.todolistAPI.exceptions.TaskNotFoundException;
 import br.com.todolistAPI.service.TaskService;
 import br.com.todolistAPI.task.Task;
 import br.com.todolistAPI.task.TaskDTO;
@@ -62,7 +63,7 @@ public class TaskController {
     }
 
     @PutMapping("/{taskId}")
-    public ResponseEntity<String> putTask(@PathVariable UUID taskId, @RequestBody @Valid TaskDTO taskDTO){
+    public ResponseEntity<String> putTask(@PathVariable UUID taskId, @RequestBody @Valid TaskDTO taskDTO) throws TaskNotFoundException {
         if (taskService.putTask(taskId, taskDTO)){
             return ResponseEntity.ok("Updated successfully");
         }
