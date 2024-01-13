@@ -37,8 +37,8 @@ public class TaskService {
     public boolean putTask(UUID taskId, TaskDTO taskDTO) throws TaskNotFoundException {
         Task task =  taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
 
-        task.setTitle(taskDTO.title());
-        task.setDescription(taskDTO.description());
+        if (!taskDTO.title().isEmpty()) task.setTitle(taskDTO.title());
+        if (!taskDTO.description().isEmpty()) task.setDescription(taskDTO.description());
         task.setConclusionDate(taskDTO.conclusionDate());
         task.setLastUpdate(LocalDate.now());
 
