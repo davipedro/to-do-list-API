@@ -1,9 +1,9 @@
-package br.com.todolistAPI.service;
+package br.com.todolistAPI.services;
 
-import br.com.todolistAPI.exceptions.TaskNotFoundException;
-import br.com.todolistAPI.task.Task;
-import br.com.todolistAPI.task.TaskDTO;
-import br.com.todolistAPI.task.TaskRepository;
+import br.com.todolistAPI.domain.task.exceptions.TaskNotFoundException;
+import br.com.todolistAPI.domain.task.Task;
+import br.com.todolistAPI.domain.task.TaskDTO;
+import br.com.todolistAPI.repositories.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

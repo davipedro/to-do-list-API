@@ -1,4 +1,4 @@
-package br.com.todolistAPI.task;
+package br.com.todolistAPI.domain.task;
 
 import com.fasterxml.jackson.annotation.*;
 import jakarta.validation.constraints.NotBlank;

@@ -1,5 +1,6 @@
-package br.com.todolistAPI.task;
+package br.com.todolistAPI.repositories;
 
+import br.com.todolistAPI.domain.task.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

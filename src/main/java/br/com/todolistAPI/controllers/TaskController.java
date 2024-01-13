@@ -1,9 +1,9 @@
-package br.com.todolistAPI.controller;
+package br.com.todolistAPI.controllers;
 
-import br.com.todolistAPI.exceptions.TaskNotFoundException;
-import br.com.todolistAPI.service.TaskService;
-import br.com.todolistAPI.task.Task;
-import br.com.todolistAPI.task.TaskDTO;
+import br.com.todolistAPI.domain.task.exceptions.TaskNotFoundException;
+import br.com.todolistAPI.services.TaskService;
+import br.com.todolistAPI.domain.task.Task;
+import br.com.todolistAPI.domain.task.TaskDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package br.com.todolistAPI.exceptions;
+package br.com.todolistAPI.domain.task.exceptions;
 
 public class TaskNotFoundException extends Throwable{
     public TaskNotFoundException() {
