@@ -1,6 +1,7 @@
 package br.com.todolistAPI.domain.task;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;

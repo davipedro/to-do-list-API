@@ -1,17 +1,15 @@
 package br.com.todolistAPI.controllers;
 
-import br.com.todolistAPI.services.TaskService;
 import br.com.todolistAPI.domain.task.Task;
 import br.com.todolistAPI.domain.task.TaskDTO;
+import br.com.todolistAPI.services.TaskService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -49,13 +47,11 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createTask(@RequestBody @Valid TaskDTO taskDTO){
+    public ResponseEntity<Object> createTask(@RequestBody @Valid TaskDTO taskDTO) throws SQLException {
         taskService.createTask(taskDTO);
         return ResponseEntity.status(201).build();
     }
 
-
-    //procurar sobre tratar excessão passando um ResponseEntity Fernanda Kipper
     @PutMapping("/{taskId}")
     public ResponseEntity<String> putTask(@PathVariable UUID taskId, @RequestBody @Valid TaskDTO taskDTO) {
         taskService.putTask(taskId, taskDTO);
