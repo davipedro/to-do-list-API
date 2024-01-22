@@ -1,12 +1,13 @@
 package br.com.todolistAPI.services;
 
-import br.com.todolistAPI.domain.task.exceptions.TaskNotFoundException;
+import br.com.todolistAPI.exceptions.task.TaskNotFoundException;
 import br.com.todolistAPI.domain.task.Task;
 import br.com.todolistAPI.domain.task.TaskDTO;
 import br.com.todolistAPI.repositories.TaskRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,18 +16,28 @@ import java.util.UUID;
 
 @Service
 public class TaskService {
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+
+    public TaskService(TaskRepository taskRepository){
+        this.taskRepository = taskRepository;
+    }
+
     public List<Task> getAllTasks(){
-       return taskRepository.findAll();
+        List<Task> allTasks = taskRepository.findAll();
+        if (allTasks.isEmpty()) throw new TaskNotFoundException("Task(s) do not found");
+        return allTasks;
     }
 
-    public Optional<List<Task>> getByTitle(String title){
-        return taskRepository.findByTitleContainingIgnoreCase(title);
+    public List<Task> getByTitle(String title){
+        Optional<List<Task>> optionalTasks = taskRepository.findByTitleContainingIgnoreCase(title);
+        return optionalTasks
+                .orElseThrow(() -> new TaskNotFoundException("Task(s) do not found"));
     }
 
-    public Optional<List<Task>> getByCreationDate(LocalDate creationDate){
-        return taskRepository.findByCreationDate(creationDate);
+    public List<Task> getByCreationDate(LocalDate creationDate){
+        Optional<List<Task>> optionalTasks = taskRepository.findByCreationDate(creationDate);
+        return optionalTasks
+                .orElseThrow(() -> new TaskNotFoundException("Task(s) do not found"));
     }
 
     public void createTask(TaskDTO taskToSave){
@@ -34,26 +45,22 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public boolean putTask(UUID taskId, TaskDTO taskDTO) throws TaskNotFoundException {
-        Task task =  taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+    public void putTask(UUID taskId, TaskDTO taskDTO) {
+        Task task =  taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException("Task do not found"));
 
-        if (!taskDTO.title().isEmpty()) task.setTitle(taskDTO.title());
-        if (!taskDTO.description().isEmpty()) task.setDescription(taskDTO.description());
+        if (!(taskDTO.title().isEmpty())) task.setTitle(taskDTO.title());
+        if (!(taskDTO.description().isEmpty())) task.setDescription(taskDTO.description());
         task.setConclusionDate(taskDTO.conclusionDate());
         task.setLastUpdate(LocalDate.now());
 
         taskRepository.save(task);
-        return true;
     }
+    public void deleteTask(UUID taskId){
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException("Task do not found"));
 
-    @Transactional
-    public boolean deleteTask(UUID taskId){
-        Optional<Task> optionalTask = taskRepository.findById(taskId);
-        if (optionalTask.isEmpty()){
-            return false;
-        }
-        taskRepository.deleteById(optionalTask.get().getId());
-        return true;
+        taskRepository.deleteById(task.getId());
     }
 
 }

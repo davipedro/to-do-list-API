@@ -1,11 +1,9 @@
 package br.com.todolistAPI.controllers;
 
-import br.com.todolistAPI.domain.task.exceptions.TaskNotFoundException;
 import br.com.todolistAPI.services.TaskService;
 import br.com.todolistAPI.domain.task.Task;
 import br.com.todolistAPI.domain.task.TaskDTO;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,41 +17,35 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
-    
-    @Autowired
-    TaskService taskService = new TaskService();
+
+    private final TaskService taskService;
+
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @GetMapping
     public ResponseEntity<List<Task>> getAllTasks(){
         List<Task> tasks = taskService.getAllTasks();
-        if(tasks.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/title")
     public ResponseEntity<List<Task>> getByTitle(@RequestParam (value = "q") String title){
-        Optional<List<Task>> optionalTasks = taskService.getByTitle(title);
-        List<Task> task = optionalTasks.orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Task not found"));
-        return ResponseEntity.ok(task);
+        List<Task> tasks = taskService.getByTitle(title);
+        return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/creation_date")
     public ResponseEntity<List<Task>> getByCreationDate(@RequestParam (value = "q") LocalDate creationDate){
-        Optional<List<Task>> taskByCreationDate = taskService.getByCreationDate(creationDate);
-        List<Task> task = taskByCreationDate.orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Task not found"));
-        return ResponseEntity.ok().body(task);
+        List<Task> taskByCreationDate = taskService.getByCreationDate(creationDate);
+        return ResponseEntity.ok().body(taskByCreationDate);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTask(@PathVariable UUID id){
-        if (taskService.deleteTask(id)){
-            return ResponseEntity.ok("Deleted successfully");
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<String> deleteTask(@PathVariable UUID id) {
+        taskService.deleteTask(id);
+        return ResponseEntity.ok("Deleted successfully");
     }
 
     @PostMapping
@@ -62,12 +54,12 @@ public class TaskController {
         return ResponseEntity.status(201).build();
     }
 
+
+    //procurar sobre tratar excessão passando um ResponseEntity Fernanda Kipper
     @PutMapping("/{taskId}")
-    public ResponseEntity<String> putTask(@PathVariable UUID taskId, @RequestBody @Valid TaskDTO taskDTO) throws TaskNotFoundException {
-        if (taskService.putTask(taskId, taskDTO)){
-            return ResponseEntity.ok("Updated successfully");
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<String> putTask(@PathVariable UUID taskId, @RequestBody @Valid TaskDTO taskDTO) {
+        taskService.putTask(taskId, taskDTO);
+        return ResponseEntity.ok("Updated successfully");
     }
 
 
