@@ -68,6 +68,10 @@ public class Task {
         return creationDate;
     }
 
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
+    }
+
     public LocalDate getConclusionDate() {
         return conclusionDate;
     }
