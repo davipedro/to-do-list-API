@@ -47,7 +47,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createTask(@RequestBody @Valid TaskDTO taskDTO) throws SQLException {
+    public ResponseEntity<Object> createTask(@RequestBody @Valid TaskDTO taskDTO) {
         taskService.createTask(taskDTO);
         return ResponseEntity.status(201).build();
     }

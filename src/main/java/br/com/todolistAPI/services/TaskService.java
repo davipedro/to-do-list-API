@@ -1,13 +1,10 @@
 package br.com.todolistAPI.services;
 
-import br.com.todolistAPI.exceptions.task.TaskNotFoundException;
 import br.com.todolistAPI.domain.task.Task;
 import br.com.todolistAPI.domain.task.TaskDTO;
+import br.com.todolistAPI.exceptions.task.TaskNotFoundException;
 import br.com.todolistAPI.repositories.TaskRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +17,11 @@ public class TaskService {
 
     public TaskService(TaskRepository taskRepository){
         this.taskRepository = taskRepository;
+    }
+
+    public void createTask(TaskDTO taskToSave){
+        Task task = new Task(taskToSave, LocalDate.now());
+        taskRepository.save(task);
     }
 
     public List<Task> getAllTasks(){
@@ -38,11 +40,6 @@ public class TaskService {
         Optional<List<Task>> optionalTasks = taskRepository.findByCreationDate(creationDate);
         return optionalTasks
                 .orElseThrow(() -> new TaskNotFoundException("Task(s) do not found"));
-    }
-
-    public void createTask(TaskDTO taskToSave){
-        Task task = new Task(taskToSave, LocalDate.now());
-        taskRepository.save(task);
     }
 
     public void putTask(UUID taskId, TaskDTO taskDTO) {
