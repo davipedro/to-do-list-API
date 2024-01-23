@@ -1,11 +1,7 @@
 package br.com.todolistAPI.domain.task;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import br.com.todolistAPI.domain.user.User;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -25,12 +21,16 @@ public class Task {
     @Column(name = "conclusion_date")
     private LocalDate conclusionDate;
     private LocalDate lastUpdate;
+    private Boolean completed = Boolean.FALSE;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public Task(TaskDTO taskDTO, LocalDate currentDate){
-        this.title = taskDTO.title();
-        this.description = taskDTO.description();
+    public Task(TaskViewDTO taskViewDTO, LocalDate currentDate){
+        this.title = taskViewDTO.title();
+        this.description = taskViewDTO.description();
         this.creationDate = currentDate;
-        this.conclusionDate = taskDTO.conclusionDate();
+        this.conclusionDate = taskViewDTO.conclusionDate();
         this.lastUpdate = LocalDate.now();
     }
 
@@ -86,5 +86,13 @@ public class Task {
 
     public void setLastUpdate(LocalDate lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
     }
 }
