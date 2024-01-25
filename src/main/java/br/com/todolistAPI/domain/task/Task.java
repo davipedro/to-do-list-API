@@ -1,5 +1,6 @@
 package br.com.todolistAPI.domain.task;
 
+import br.com.todolistAPI.DTOs.TaskCreateDTO;
 import br.com.todolistAPI.domain.user.User;
 import jakarta.persistence.*;
 
@@ -26,11 +27,11 @@ public class Task {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Task(TaskViewDTO taskViewDTO, LocalDate currentDate){
-        this.title = taskViewDTO.title();
-        this.description = taskViewDTO.description();
+    public Task(TaskCreateDTO taskCreateDTO, LocalDate currentDate){
+        this.title = taskCreateDTO.title();
+        this.description = taskCreateDTO.description();
         this.creationDate = currentDate;
-        this.conclusionDate = taskViewDTO.conclusionDate();
+        this.conclusionDate = taskCreateDTO.conclusionDate();
         this.lastUpdate = LocalDate.now();
     }
 
