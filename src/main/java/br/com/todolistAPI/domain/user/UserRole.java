@@ -1,5 +1,7 @@
 package br.com.todolistAPI.domain.user;
 
+import java.util.Arrays;
+
 public enum UserRole {
     ADMIN("admin"),
     USER("user");
@@ -12,5 +14,10 @@ public enum UserRole {
 
     public String getRole() {
         return role;
+    }
+
+    public static boolean verifyRole(UserRole role){
+        return Arrays.stream(UserRole.values())
+                .anyMatch(userRole -> userRole.getRole().equalsIgnoreCase(role.getRole()));
     }
 }
