@@ -1,7 +1,8 @@
 package br.com.todolistAPI.services;
 
+import br.com.todolistAPI.DTOs.TaskCreateDTO;
+import br.com.todolistAPI.DTOs.TaskUpdateDTO;
 import br.com.todolistAPI.domain.task.Task;
-import br.com.todolistAPI.domain.task.TaskDTO;
 import br.com.todolistAPI.exceptions.task.TaskNotFoundException;
 import br.com.todolistAPI.repositories.TaskRepository;
 import org.junit.jupiter.api.Assertions;
@@ -32,10 +33,9 @@ class TaskServiceTest {
 
     @Test
     void createTask_PassDtoValuesToTask() {
-        UUID id = UUID.randomUUID();
         LocalDate conclusionDate = LocalDate.of(2024,1,3);
         LocalDate currentDate = LocalDate.of(2024,1,1);
-        TaskDTO taskToSave = new TaskDTO(id,"title","description",conclusionDate);
+        TaskCreateDTO taskToSave = new TaskCreateDTO("title","description",conclusionDate);
 
         Task task = new Task(taskToSave, currentDate);
 
@@ -79,29 +79,28 @@ class TaskServiceTest {
     @Test
     void  putTask_ShouldThrowException_WhenNoExistTasksWithProvidedId(){
         UUID uuid = UUID.randomUUID();
-        TaskDTO taskDTO = mock(TaskDTO.class);
+        TaskUpdateDTO taskViewDTO = mock(TaskUpdateDTO.class);
         when(taskRepository.findById(uuid)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(TaskNotFoundException.class,
                 () -> {
-                    taskService.putTask(uuid,taskDTO);
+                    taskService.putTask(uuid, taskViewDTO);
                 });
     }
 
     @Test
     void putTask_ShouldUpdateTask_WhenTaskDtoFieldsAreNotEmpty(){
         Task task = new Task();
-        UUID uuid = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         LocalDate localDate = mock(LocalDate.class);
-        TaskDTO taskDTO = new TaskDTO(uuid,"title","description",localDate);
+        TaskUpdateDTO taskViewDTO = new TaskUpdateDTO("title","description",localDate, false);
 
-        if (!(taskDTO.title().isEmpty())) task.setTitle(taskDTO.title());
-        if (!(taskDTO.description().isEmpty())) task.setDescription(taskDTO.description());
-        task.setConclusionDate(taskDTO.conclusionDate());
+        if (!(taskViewDTO.title().isEmpty())) task.setTitle(taskViewDTO.title());
+        if (!(taskViewDTO.description().isEmpty())) task.setDescription(taskViewDTO.description());
+        task.setConclusionDate(taskViewDTO.conclusionDate());
         task.setLastUpdate(LocalDate.now());
 
-        Assertions.assertEquals(taskDTO.title(), task.getTitle());
-        Assertions.assertEquals(taskDTO.description(), task.getDescription());
+        Assertions.assertEquals(taskViewDTO.title(), task.getTitle());
+        Assertions.assertEquals(taskViewDTO.description(), task.getDescription());
         Assertions.assertNotNull(task.getConclusionDate());
         Assertions.assertNotNull(task.getLastUpdate());
     }
