@@ -1,5 +1,6 @@
 package br.com.todolistAPI.exceptions;
 
+import br.com.todolistAPI.exceptions.task.TaskCouldNotBeCreated;
 import br.com.todolistAPI.exceptions.task.TaskNotFoundException;
 import br.com.todolistAPI.exceptions.user.AlreadyRegisteredUserException;
 import br.com.todolistAPI.exceptions.user.RoleNotFoundException;
@@ -33,5 +34,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     private ResponseEntity<String> UserNotFoundHandler(){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    }
+
+    @ExceptionHandler(TaskCouldNotBeCreated.class)
+    private ResponseEntity<String> TaskCreationException(){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User could not be created");
     }
 }

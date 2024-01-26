@@ -3,6 +3,7 @@ package br.com.todolistAPI.services;
 import br.com.todolistAPI.DTOs.TaskCreateDTO;
 import br.com.todolistAPI.DTOs.TaskUpdateDTO;
 import br.com.todolistAPI.domain.task.Task;
+import br.com.todolistAPI.exceptions.task.TaskCouldNotBeCreated;
 import br.com.todolistAPI.exceptions.task.TaskNotFoundException;
 import br.com.todolistAPI.repositories.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,12 @@ public class TaskService {
     }
 
     public void createTask(TaskCreateDTO taskToSave){
-        Task task = new Task(taskToSave, LocalDate.now());
-        taskRepository.save(task);
+        Task task = new Task(taskToSave);
+        try {
+            taskRepository.save(task);
+        } catch (RuntimeException e){
+            throw new TaskCouldNotBeCreated("Task could not be created", e);
+        }
     }
 
     public List<Task> getAllTasks(){
