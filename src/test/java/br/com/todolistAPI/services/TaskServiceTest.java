@@ -17,7 +17,10 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class TaskServiceTest {
@@ -32,16 +35,24 @@ class TaskServiceTest {
     }
 
     @Test
-    void createTask_PassDtoValuesToTask() {
+    void createTask_ShouldCreateTask_WhenPassedDtoValuesAreCorrect() {
         LocalDate conclusionDate = LocalDate.of(2024,1,3);
-        LocalDate currentDate = LocalDate.of(2024,1,1);
         TaskCreateDTO taskToSave = new TaskCreateDTO("title","description",conclusionDate);
 
-        Task task = new Task(taskToSave, currentDate);
+        Task task = new Task(taskToSave);
 
         Assertions.assertEquals(taskToSave.title(), task.getTitle());
         Assertions.assertEquals(taskToSave.description(), task.getDescription());
         Assertions.assertEquals(taskToSave.conclusionDate(), task.getConclusionDate());
+    }
+
+    @Test
+    void createTask_ShouldSaveTask_WhenPassedDtoValuesAreCorrect(){
+        TaskCreateDTO taskToSave = mock(TaskCreateDTO.class);
+
+        taskService.createTask(taskToSave);
+
+        verify(taskRepository).save(any(Task.class));
     }
 
     @Test
@@ -115,6 +126,15 @@ class TaskServiceTest {
                     taskService.deleteTask(uuid);
                 });
     }
+    @Test
+    void deleteTask_ShouldCallTaskRepositoryDeleteById_WhenTheTaskWasFind(){
+        UUID uuid = UUID.randomUUID();
+        Task task = mock(Task.class);
+        task.setId(uuid);
+        when(taskRepository.findById(uuid)).thenReturn(Optional.of(task));
 
+        taskService.deleteTask(uuid);
 
+        verify(taskRepository, times(1)).deleteById(task.getId());
+    }
 }
