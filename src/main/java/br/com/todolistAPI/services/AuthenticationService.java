@@ -1,6 +1,6 @@
 package br.com.todolistAPI.services;
 
-import br.com.todolistAPI.domain.user.RegisterDTO;
+import br.com.todolistAPI.DTOs.RegisterDTO;
 import br.com.todolistAPI.domain.user.User;
 import br.com.todolistAPI.domain.user.UserRole;
 import br.com.todolistAPI.exceptions.user.AlreadyRegisteredUserException;

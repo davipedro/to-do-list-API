@@ -2,8 +2,8 @@ package br.com.todolistAPI.controllers;
 
 import br.com.todolistAPI.DTOs.LoginResponseDTO;
 import br.com.todolistAPI.config.security.TokenService;
-import br.com.todolistAPI.domain.user.AuthenticationDTO;
-import br.com.todolistAPI.domain.user.RegisterDTO;
+import br.com.todolistAPI.DTOs.AuthenticationDTO;
+import br.com.todolistAPI.DTOs.RegisterDTO;
 import br.com.todolistAPI.domain.user.User;
 import br.com.todolistAPI.domain.user.UserRole;
 import br.com.todolistAPI.services.AuthenticationService;

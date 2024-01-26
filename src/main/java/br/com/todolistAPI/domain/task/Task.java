@@ -27,10 +27,10 @@ public class Task {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Task(TaskCreateDTO taskCreateDTO, LocalDate currentDate){
+    public Task(TaskCreateDTO taskCreateDTO){
         this.title = taskCreateDTO.title();
         this.description = taskCreateDTO.description();
-        this.creationDate = currentDate;
+        this.creationDate = LocalDate.now();
         this.conclusionDate = taskCreateDTO.conclusionDate();
         this.lastUpdate = LocalDate.now();
     }
@@ -47,6 +47,10 @@ public class Task {
 
     public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id){
+        this.id = id;
     }
 
     public String getTitle() {

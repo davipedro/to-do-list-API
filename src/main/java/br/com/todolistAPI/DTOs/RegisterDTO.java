@@ -1,4 +1,4 @@
-package br.com.todolistAPI.domain.user;
+package br.com.todolistAPI.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
