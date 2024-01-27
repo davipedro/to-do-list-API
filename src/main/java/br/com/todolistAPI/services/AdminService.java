@@ -5,6 +5,7 @@ import br.com.todolistAPI.DTOs.UserResponseDTO;
 import br.com.todolistAPI.domain.user.User;
 import br.com.todolistAPI.domain.user.UserRole;
 import br.com.todolistAPI.exceptions.user.UserNotFoundException;
+import br.com.todolistAPI.exceptions.admin.UserDeletionException;
 import br.com.todolistAPI.repositories.AdminRepository;
 import org.springframework.stereotype.Service;
 
@@ -48,5 +49,15 @@ public class AdminService {
                 user.getUsername(),
                 user.getRole()
         );
+    }
+
+    public void deleteUserById(String userId){
+        User user = adminRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (user.getRole() != UserRole.USER)
+            throw new UserDeletionException("You cannot delete users with administrator permissions from this endpoint");
+
+        adminRepository.deleteById(userId);
     }
 }
