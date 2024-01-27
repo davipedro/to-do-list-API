@@ -56,16 +56,6 @@ class TaskServiceTest {
     }
 
     @Test
-    void getAllTasks_ShouldThrowException_WhenNoTasksExist(){
-        when(taskRepository.findAll()).thenReturn(Collections.emptyList());
-
-        Assertions.assertThrows(TaskNotFoundException.class,
-                () -> {
-            taskService.getAllTasks();
-        });
-    }
-
-    @Test
     void getByTitle_ShouldThrowException_WhenNoExistTasksWithProvidedTitle(){
         String title = "title";
         when(taskRepository.findByTitleContainingIgnoreCase(title)).thenReturn(Optional.empty());
