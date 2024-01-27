@@ -30,9 +30,7 @@ public class TaskService {
     }
 
     public List<Task> getAllTasks(){
-        List<Task> taskList =  taskRepository.findAll();
-        if (taskList.isEmpty()) throw new TaskNotFoundException("Task(s) do not found");
-        return taskList;
+        return taskRepository.findAll();
     }
 
     public List<Task> getByTitle(String title){
