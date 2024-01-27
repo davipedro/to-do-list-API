@@ -5,6 +5,9 @@ import br.com.todolistAPI.exceptions.task.TaskNotFoundException;
 import br.com.todolistAPI.exceptions.user.AlreadyRegisteredUserException;
 import br.com.todolistAPI.exceptions.user.RoleNotFoundException;
 import br.com.todolistAPI.exceptions.user.UserNotFoundException;
+import br.com.todolistAPI.exceptions.admin.UserDeletionException;
+import br.com.todolistAPI.exceptions.root.RootAlreadyRegistered;
+import br.com.todolistAPI.exceptions.root.UserIsNotAnAdmin;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -39,5 +42,22 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(TaskCouldNotBeCreated.class)
     private ResponseEntity<String> TaskCreationException(){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User could not be created");
+    }
+
+    @ExceptionHandler(RootAlreadyRegistered.class)
+    private ResponseEntity<String> registeredRootHandler(){
+        return ResponseEntity.badRequest().body("The root is already registered");
+    }
+
+    @ExceptionHandler(UserIsNotAnAdmin.class)
+    private ResponseEntity<String> deleteAdminHandler(){
+        return ResponseEntity.badRequest().body("User is not an admin");
+    }
+
+    @ExceptionHandler(UserDeletionException.class)
+    private ResponseEntity<String> UserDeletionHandler(){
+        return ResponseEntity.
+                badRequest()
+                .body("You cannot delete users with administrator permissions from this endpoint");
     }
 }
