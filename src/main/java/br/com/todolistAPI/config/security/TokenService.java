@@ -20,10 +20,8 @@ public class TokenService {
 
     /**
      * Gera o token a partir do algoritmo definido,
-     * passando para o builder do JWT as informações s
+     * passando para o builder do JWT as informações a
      * serem tokenizadas
-     * @param user
-     * @return
      */
     public String generateToken(User user){
         try {
@@ -42,8 +40,6 @@ public class TokenService {
      * Faz o processo inverso da tokenização,
      * obtendo o valor do campo que está sendo utilizado
      * para autenticação via token
-     * @param token
-     * @return
      */
     public String validateToken(String token){
         try {
@@ -60,7 +56,6 @@ public class TokenService {
 
     /**
      * Define o tempo de expiração do token
-     * @return
      */
     private Instant genExpirationDate(){
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
