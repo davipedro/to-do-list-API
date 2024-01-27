@@ -26,6 +26,7 @@ public class SecurityConfigurations {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.POST, "api/v1/root-admin/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "api/v1/tasks").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "api/v1/tasks").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "api/v1/tasks/title").hasRole("USER")
@@ -34,11 +35,12 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE, "api/v1/tasks/{id}").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "api/v1/user/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "api/v1/user/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "api/v1/admin/auth/login").permitAll()//hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "api/v1/admin/auth/register").permitAll()//hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "api/v1/admin/auth/login").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "api/v1/admin/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "api/v1/admin/admins").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+                        .requestMatchers(HttpMethod.POST, "api/v1/root-admin/auth/admin-register").hasRole("ROOT")
+                        .requestMatchers(HttpMethod.POST, "api/v1/root-admin/auth/login").permitAll()
+                        .anyRequest().permitAll())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
