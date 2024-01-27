@@ -3,6 +3,7 @@ package br.com.todolistAPI.domain.user;
 import java.util.Arrays;
 
 public enum UserRole {
+    ROOT("root"),
     ADMIN("admin"),
     USER("user");
 
