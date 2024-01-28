@@ -1,0 +1,714 @@
+{
+	"info": {
+		"_postman_id": "c0c7e537-0c2d-447d-83a8-e129ebf69c0b",
+		"name": "to-do-list-API",
+		"description": "# To-Do List API\n\n# Overview\n\nEsta aplicação é uma API Rest dedicada à gestão de tarefas. Ela oferece ao usuário a possibilidade de se organizar de maneira mais eficiente e aumentar sua produtividade. Uma de suas principais funcionalidades é a definição de prioridades para as tarefas por meio de tags de prioridade.\n\nAlém disso, a aplicação conta com um sistema de cadastro de usuários que utiliza autenticação JWT. Os endpoints são restritos com base no papel do usuário, seja ele um usuário comum ou administrador.\n\nO projeto está em andamento e pode ser usado como base para o desenvolvimento de uma aplicação completa de lista de tarefas.\n\n## Funcionalidades\n\n### Tasks\n\n- Criação\n- Recuperação\n- Atualizaçao\n- Remoção\n    \n\n### Pesquisas por filtros\n\n- Todas\n- Por Titulo\n- Pela data de Criação\n    \n\n### Tags de Prioridade (a implementar)\n\n- Alta\n- Média\n- Baixa\n    \n\n## API Endpoints\n\nA API possui os seguintes endpoints:\n\n**Task**\n\n``` markdown\n- Create a new product           - POST /api/v1/tasks\n- Retrieve all tasks             - GET /api/v1/tasks\n- Retrieve task by creation date - GET /api/v1/tasks/creation_date?q=2024-03-01\n- Retrieve task by title         - GET /api/v1/tasks/title?q=Uma task\n- Updates a task                 - PUT /api/v1/tasks/{id}\n- Delete a task                  - DELETE /api/v1/tasks/{id}\n\n ```\n\n**User**\n\n``` markdown\n- Create an account           - POST /api/v1/user/auth/register\n- Log in to an account        - POST /api/v1/user/auth/login\n\n ```\n\n**Admin**\n\n``` markdown\n- Log in to an account           - POST /api/v1/admin/auth/login\n- Retrieve all users             - GET /api/v1/admin/users\n- Retrieve an user by id         - GET /api/v1/admin/user/{id}\n- Retrieve all admins            - GET /api/v1/admin/admins\n\n ```\n\n**Root**\n\n``` markdown\n- Log in to the Root account     - POST   /api/v1/root-admin/auth/login\n- Create a Root user             - POST   /api/v1/root-admin/auth/register\n- Create a admin account         - POST   /api/v1/root-admin/auth/admin-register\n- Delete a admin account         - DELETE /api/v1/root-admin/admin/{adminId}\n\n ```\n\n### Exemplos de requisições (Entrada e Saída)\n\n**BODY (INPUT) - CREATE / PUT**\n\n``` json\n{\n  \"title\": \"Uma Task\",\n  \"description\": \"Uma descrição\",\n  \"conclusionDate\": \"2024-01-31\"\n}\n\n ```\n\n**BODY (OUTPUT)**\n\n``` json\n{\n  \"id\": \"c2bb4cd2-2a75-4fcf-8f34-bbe96681534e\",\n  \"title\": \"Uma Task\",\n  \"description\": \"Uma descrição\",\n  \"creationDate\": \"2024-01-01\",\n  \"conclusionDate\": \"2024-01-31\",\n  \"lastUpdate\": \"2024-01-23\"\n},\n\n ```\n\n# Sobre o user\n\nO user é o usuário comum, ele possui apenas permissões relacionadas a suas tarefas, sendo elas:\n\n- Criar tarefas\n- Consultar tarefas\n- Atualizar tarefas\n- Excluir tarefas\n    \n\n# Sobre o admin\n\n- Não existe limitação do número de contas com esse cargo.\n    \n\nO administrador possui como permissões:\n\n- Acessar e excluir usuários comuns da aplicação (usuários que não possuem permissões administrativas)\n- Consultar usuários comuns e usuários administradores\n    \n\n# Sobre o Admin-Root\n\n> **Importante**: Guarde bem a senha e o login escolhidos para o Root pois não poderá ser recuperado através do sistema (o banco de dados guarda a senha encriptada). \n  \n\nO Root será único na aplicação e é o cargo com todas as permissões no sistema\n\nA ideia é que o Root seja de acesso interno do sistema e possua acesso restrito as pessoas de confiança\n\n- A senha escolhida será encriptada assim como todo usuário, portanto a segurança da senha é feita pela aplicação\n- O login do admin root também possui autenticação via JWT\n    \n\nO Root possui como permissões:\n\n- Único a possuir permissão de criar e excluir usuários administradores.\n- Todas as permissões dos cargos abaixo dele.\n- Consultar tarefas de todos os usuários existentes na aplicação (ainda não implementado)\n    \n\n## Tecnologias Utilizadas\n\n- **Java 17**\n    \n\n```\nStarter Web | Starter Validation | Starter Data JPA \nStarter Test | Starter Security\n\n ```\n\n- **Spring Security Test 6.2.1**\n    \n- **SpringDoc 2.3.0**\n    \n- **PostgreSQL 46.2.0**\n    \n- **JUnit 4.13.2**\n    \n- **JWT 4.4.0**",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29002270"
+	},
+	"item": [
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "getAllTasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/tasks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"tasks"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "getTaskByCreationDate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/tasks/creation_date?q=2024-03-01",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								"creation_date"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "2024-03-01"
+								}
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "getTaskByTitle",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/tasks/title?q=",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								"title"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": ""
+								}
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "PutTask",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Uma task\",\r\n    \"description\": \"Uma descrição\",\r\n    \"conclusionDate\": \"2024-01-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/tasks/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								""
+							]
+						},
+						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "CreateTask",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6InVzdWFyaW9Mb2dpbiIsImV4cCI6MTcwNjQwMDU1OH0.DSCKVLJGnb1YfIdOrzmIN5bG8MHWdcQhQhZrzEsJvRY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Uma task\",\n    \"description\": \"Uma descricao\",\n    \"conclusionDate\": \"2024-01-31\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/tasks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"tasks"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/tasks/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								""
+							]
+						},
+						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+					},
+					"response": []
+				}
+			],
+			"description": "Para ter acesso aos endpoints relacionados as tasks é necessário estar logado  \nAo efetuar o login será fornecido um Token, utilize-o para ter acesso aos end points de task",
+			"auth": {
+				"type": "bearer"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"usuarioLogin\",\r\n    \"password\": \"usuarioSenha\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"usuarioLogin\",\r\n    \"password\": \"usuarioSenha\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "payload",
+									"value": "{}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"adminLogin\",\r\n    \"password\": \"adminSenha\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/admin/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "allUsers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/admin/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "allAdmins",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/admin/admins",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"admins"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Root",
+			"item": [
+				{
+					"name": "registerAdmin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"adminLogin\",\r\n    \"password\": \"adminSenha\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/root-admin/auth/admin-register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"root-admin",
+								"auth",
+								"admin-register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Root login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"adminRoot\",\r\n    \"password\": \"adminRoot\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/root-admin/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"root-admin",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "registerRoot",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"adminRoot\",\r\n    \"password\": \"adminRoot\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/root-admin/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"root-admin",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		}
+	]
+}
