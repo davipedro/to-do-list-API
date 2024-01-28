@@ -5,11 +5,32 @@
 ![Postgresql](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Junit](https://img.shields.io/badge/testing%20library-323330?style=for-the-badge&logo=testing-library&logoColor=red)
 
+## End points
+> **Swagger:** o projeto possui integração com o Swagger através da biblioteca ``SpringDoc``, após clonar o projeto para acessar insira no seu navegador:
+```
+http://localhost:8080/swagger-ui/index.html#/
+```
+> **Postman:** o projeto possui um arquivo JSON com todos os endpoints para postman nomeado "to-do-list-API.postman_collection.json" 😉
+
 ## Overview
-Esta aplicação é uma API de tarefas que permite ao usuário organizar suas atividades diárias.
+Esta aplicação é uma API Rest dedicada à gestão de tarefas. Ela oferece ao usuário a possibilidade de se organizar de maneira mais eficiente e aumentar sua produtividade. Uma de suas principais funcionalidades é a definição de prioridades para as tarefas por meio de tags de prioridade.
+
+Além disso, a aplicação conta com um sistema de cadastro de usuários que utiliza autenticação JWT. Os endpoints são restritos com base no papel do usuário, seja ele um usuário comum ou administrador.
 
 O projeto está em andamento e pode ser usado como base para o desenvolvimento de uma aplicação completa de lista de tarefas.
 
+## Tecnologias Utilizadas
+- **Java 17**
+- **Spring Boot 3.2.1:** <br>
+``
+Starter Web | Starter Validation | Starter Data JPA
+Starter Test | Starter Security
+``
+- **Spring Security Test 6.2.1**
+- **SpringDoc 2.3.0**
+- **PostgreSQL 46.2.0**
+- **JUnit 4.13.2**
+- **JWT 4.4.0**
 
 ## Funcionalidades
 
@@ -42,6 +63,30 @@ A API possui os seguintes endpoints:
 - Delete a task                  - DELETE /api/v1/tasks/{id}
 ```
 
+**User**
+```markdown
+- Create an account           - POST /api/v1/user/auth/register
+- Log in to an account        - POST /api/v1/user/auth/login
+```
+
+**Admin**
+```markdown
+- Log in to an account           - POST /api/v1/admin/auth/login
+- Retrieve all users             - GET /api/v1/admin/users
+- Retrieve an user by id         - GET /api/v1/admin/user/{id}
+- Retrieve all admins            - GET /api/v1/admin/admins
+```
+
+**Root**
+```markdown
+- Log in to the Root account     - POST   /api/v1/root-admin/auth/login
+- Create a Root user             - POST   /api/v1/root-admin/auth/register
+- Create a admin account         - POST   /api/v1/root-admin/auth/admin-register
+- Delete a admin account         - DELETE /api/v1/root-admin/admin/{adminId}
+```
+
+### Exemplos de requisições (Entrada e Saída)
+
 **BODY (INPUT) - CREATE / PUT**
 ```json
 {
@@ -62,10 +107,31 @@ A API possui os seguintes endpoints:
 },
 ```
 
-## Tecnologias Utilizadas
-- **Java 17**
-- **Spring Boot 3.2.1**
-- **Spring Boot Starter Validation**
-- **Spring Data JPA**
-- **PostgreSQL**
-- **JUnit**
+# Sobre o user
+O user é o usuário comum, ele possui apenas permissões relacionadas a suas tarefas, sendo elas:
++ Criar tarefas
++ Consultar tarefas
++ Atualizar tarefas
++ Excluir tarefas
+
+# Sobre o admin
++ Não existe limitação do número de contas com esse cargo.
+
+O administrador possui como permissões: 
++ Acessar e excluir usuários comuns da aplicação (usuários que não possuem permissões administrativas)
++ Consultar usuários comuns e usuários administradores
+
+# Sobre o Admin-Root
+> **Importante**: Guarde bem a senha e o login escolhidos para o Root pois não poderá ser recuperado através do sistema (o banco de dados guarda a senha encriptada).
+
+O Root será único na aplicação e é o cargo com todas as permissões no sistema
+
+A ideia é que o Root seja de acesso interno do sistema e possua acesso restrito as pessoas de confiança
+
++ A senha escolhida será encriptada assim como todo usuário, portanto a segurança da senha é feita pela aplicação
++ O login do admin root também possui autenticação via JWT
+
+O Root possui como permissões:
++ Único a possuir permissão de criar e excluir usuários administradores.
++ Todas as permissões dos cargos abaixo dele.
++ Consultar tarefas de todos os usuários existentes na aplicação (ainda não implementado)
