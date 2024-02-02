@@ -126,7 +126,7 @@ O administrador possui como permissões:
 
 O Root será único na aplicação e é o cargo com todas as permissões no sistema
 
-A ideia é que o Root seja de acesso interno do sistema e possua acesso restrito as pessoas de confiança
+A ideia é que o Root seja de acesso interno do sistema e seja de acesso restrito, apenas para pessoas de confiança
 
 + A senha escolhida será encriptada assim como todo usuário, portanto a segurança da senha é feita pela aplicação
 + O login do admin root também possui autenticação via JWT
