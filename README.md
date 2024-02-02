@@ -128,10 +128,22 @@ O Root será único na aplicação e é o cargo com todas as permissões no sist
 
 A ideia é que o Root seja de acesso interno do sistema e seja de acesso restrito, apenas para pessoas de confiança
 
-+ A senha escolhida será encriptada assim como todo usuário, portanto a segurança da senha é feita pela aplicação
+### O admin-root pode ser criado através do endpoint POST:
+```
+/api/v1/root-admin/auth/admin-register
+```
+Nele é necessário passar um JSON com a seguinte estrutura:
+```json
+{
+    "login": "LoginDoRoot",
+    "password": "senhaDoRoot"
+}
+```
++ A senha escolhida será encriptada assim como todo usuário, portanto a segurança da senha é feita pela aplicação, não se preocupe com a persistência da senha ``apenas em guardar com segurança a senha e o login escolhido.``
 + O login do admin root também possui autenticação via JWT
 
 O Root possui como permissões:
+
 + Único a possuir permissão de criar e excluir usuários administradores.
 + Todas as permissões dos cargos abaixo dele.
 + Consultar tarefas de todos os usuários existentes na aplicação (ainda não implementado)
