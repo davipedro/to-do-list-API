@@ -4,13 +4,15 @@ package br.com.todolistAPI.services;
 import br.com.todolistAPI.DTOs.UserResponseDTO;
 import br.com.todolistAPI.domain.user.User;
 import br.com.todolistAPI.domain.user.UserRole;
-import br.com.todolistAPI.exceptions.user.UserNotFoundException;
 import br.com.todolistAPI.exceptions.admin.UserDeletionException;
+import br.com.todolistAPI.exceptions.user.UserNotFoundException;
 import br.com.todolistAPI.repositories.AdminRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AdminService {
@@ -21,24 +23,30 @@ public class AdminService {
         this.adminRepository = adminRepository;
     }
 
-    public List<UserResponseDTO> getAllUsers(){
-        List<User> user = adminRepository.findByRole(UserRole.USER)
+    public Page<UserResponseDTO> getAllUsers(Pageable pageable){
+        Page<User> user = adminRepository.findByRole(UserRole.USER, pageable)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        return user.stream().map(u -> new UserResponseDTO(
+
+        List<UserResponseDTO> userDTOList = user.stream().map(u -> new UserResponseDTO(
                 u.getId(),
                 u.getUsername(),
                 u.getRole()
-        )).collect(Collectors.toList());
+        )).toList();
+
+        return new PageImpl<>(userDTOList, pageable, user.getTotalElements());
     }
 
-    public List<UserResponseDTO> getAllAdmins(){
-        List<User> admin = adminRepository.findByRole(UserRole.ADMIN)
+    public Page<UserResponseDTO> getAllAdmins(Pageable pageable){
+        Page<User> admin = adminRepository.findByRole(UserRole.ADMIN, pageable)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        return admin.stream().map(adm -> new UserResponseDTO(
+
+        List<UserResponseDTO> adminDTOList = admin.stream().map(adm -> new UserResponseDTO(
                 adm.getId(),
                 adm.getUsername(),
                 adm.getRole()
-        )).collect(Collectors.toList());
+        )).toList();
+
+        return new PageImpl<>(adminDTOList, pageable, admin.getTotalElements());
     }
 
     public UserResponseDTO getUserById(String id){
