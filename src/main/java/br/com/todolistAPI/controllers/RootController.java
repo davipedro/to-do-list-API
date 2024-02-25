@@ -9,6 +9,7 @@ import br.com.todolistAPI.domain.user.UserRole;
 import br.com.todolistAPI.services.AuthenticationService;
 import br.com.todolistAPI.services.RootService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,9 @@ public class RootController {
         this.rootService = rootService;
     }
 
-    @Operation(summary = "Permite o login do admin root")
+    @Operation(summary = "Permite o login do admin root", security = { @SecurityRequirement(name = "bearer-key") })
     @PostMapping("/auth/login")
-    public ResponseEntity<Object> login (@RequestBody @Valid AuthenticationDTO data){
+    public ResponseEntity<Object> login (@RequestBody @Valid AuthenticationDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
@@ -53,14 +54,14 @@ public class RootController {
         return ResponseEntity.ok().body("The root was successfully registered");
     }
 
-    @Operation(summary = "Permite o cadastro de usuários administradores")
+    @Operation(summary = "Permite o cadastro de usuários administradores", security = { @SecurityRequirement(name = "bearer-key") })
     @PostMapping("/auth/admin-register")
     public ResponseEntity<String> registerAdmin(@RequestBody @Valid RegisterDTO registerDTO){
         authenticationService.register(registerDTO, UserRole.ADMIN);
         return ResponseEntity.ok().body("User registered successfully");
     }
 
-    @Operation(summary = "Permite excluir um administrador pelo id")
+    @Operation(summary = "Permite excluir um administrador pelo id", security = { @SecurityRequirement(name = "bearer-key") })
     @DeleteMapping("/admin/{adminId}")
     public ResponseEntity<String> deleteAdminById(@PathVariable("adminId") String adminId){
         rootService.deleteAdminById(adminId);
