@@ -5,6 +5,7 @@ import br.com.todolistAPI.DTOs.TaskUpdateDTO;
 import br.com.todolistAPI.domain.task.Task;
 import br.com.todolistAPI.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -32,42 +33,42 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @Operation(summary = "Cria uma nova tarefa")
+    @Operation(summary = "Cria uma nova tarefa" , security = { @SecurityRequirement(name = "bearer-key") })
     @PostMapping
     public ResponseEntity<Object> createTask(@RequestBody @Valid TaskCreateDTO taskCreateDTO) {
         taskService.createTask(taskCreateDTO);
         return ResponseEntity.status(201).build();
     }
 
-    @Operation(summary = "Obtém todas as tarefas")
+    @Operation(summary = "Obtém todas as tarefas" , security = { @SecurityRequirement(name = "bearer-key") })
     @GetMapping
     public ResponseEntity<List<Task>> getAllTasks(){
         List<Task> tasks = taskService.getAllTasks();
         return ResponseEntity.ok(tasks);
     }
 
-    @Operation(summary = "Obtém tarefas por título")
+    @Operation(summary = "Obtém tarefas por título", security = { @SecurityRequirement(name = "bearer-key") })
     @GetMapping("/title")
     public ResponseEntity<List<Task>> getByTitle(@RequestParam (value = "q") String title){
         List<Task> tasks = taskService.getByTitle(title);
         return ResponseEntity.ok(tasks);
     }
 
-    @Operation(summary = "Obtém tarefas por data de criação")
+    @Operation(summary = "Obtém tarefas por data de criação", security = { @SecurityRequirement(name = "bearer-key") })
     @GetMapping("/creation_date")
     public ResponseEntity<List<Task>> getByCreationDate(@RequestParam (value = "q") LocalDate creationDate){
         List<Task> taskByCreationDate = taskService.getByCreationDate(creationDate);
         return ResponseEntity.ok().body(taskByCreationDate);
     }
 
-    @Operation(summary = "Atualiza uma tarefa")
+    @Operation(summary = "Atualiza uma tarefa", security = { @SecurityRequirement(name = "bearer-key") })
     @PutMapping("/{taskId}")
     public ResponseEntity<String> putTask(@PathVariable UUID taskId, @RequestBody @Valid TaskUpdateDTO taskUpdateDTO) {
         taskService.putTask(taskId, taskUpdateDTO);
         return ResponseEntity.ok("Updated successfully");
     }
 
-    @Operation(summary = "Deleta uma tarefa")
+    @Operation(summary = "Deleta uma tarefa", security = { @SecurityRequirement(name = "bearer-key") })
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTask(@PathVariable UUID id) {
         taskService.deleteTask(id);
