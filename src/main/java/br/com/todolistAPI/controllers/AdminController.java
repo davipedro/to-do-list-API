@@ -7,9 +7,13 @@ import br.com.todolistAPI.config.security.TokenService;
 import br.com.todolistAPI.domain.user.User;
 import br.com.todolistAPI.services.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,28 +48,30 @@ public class AdminController {
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
-    @Operation(summary = "Obtém todos os usuários com permissões básicas")
+    @Operation(summary = "Obtém todos os usuários com permissões básicas" , security = { @SecurityRequirement(name = "bearer-key") })
     @GetMapping("/users")
-    public ResponseEntity<List<UserResponseDTO>> getAllUsers(){
-        List<UserResponseDTO> userList = adminService.getAllUsers();
-        return ResponseEntity.ok().body(userList);
+    public ResponseEntity<Page<UserResponseDTO>> getAllUsers(Pageable pageable) {
+
+        Page<UserResponseDTO> usersPage = adminService.getAllUsers(pageable);
+
+        return new ResponseEntity<>(usersPage, HttpStatus.OK);
     }
 
-    @Operation(summary = "Obtém todos os usuários com permissões de administrador")
+    @Operation(summary = "Obtém todos os usuários com permissões de administrador", security = { @SecurityRequirement(name = "bearer-key") })
     @GetMapping("/admins")
-    public ResponseEntity<List<UserResponseDTO>> getAllAdmins(){
-        List<UserResponseDTO> adminList = adminService.getAllAdmins();
+    public ResponseEntity<Page<UserResponseDTO>> getAllAdmins(Pageable pageable){
+        Page<UserResponseDTO> adminList = adminService.getAllAdmins(pageable);
         return ResponseEntity.ok().body(adminList);
     }
 
-    @Operation(summary = "Obtém um usuário pelo seu id (independe da permissão)")
+    @Operation(summary = "Obtém um usuário pelo seu id (independe da permissão)", security = { @SecurityRequirement(name = "bearer-key") })
     @GetMapping("/user/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable String id){
         UserResponseDTO user = adminService.getUserById(id);
         return ResponseEntity.ok().body(user);
     }
 
-    @Operation(summary = "Permite excluir um usuário comum pelo id")
+    @Operation(summary = "Permite excluir um usuário comum pelo id", security = { @SecurityRequirement(name = "bearer-key") })
     @DeleteMapping("/user/{userId}")
     public ResponseEntity<String> deleteAdminById(@PathVariable("userId") String userId){
         adminService.deleteUserById(userId);
