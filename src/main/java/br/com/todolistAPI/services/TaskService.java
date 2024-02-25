@@ -41,6 +41,7 @@ public class TaskService {
     public List<Task> getByCreationDate(LocalDate creationDate){
         return taskRepository.findByCreationDate(creationDate)
                 .orElseThrow(() -> new TaskNotFoundException("Task(s) do not found"));
+
     }
 
     public void putTask(UUID taskId, TaskUpdateDTO taskUpdateDTO) {
