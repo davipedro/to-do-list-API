@@ -1,6 +1,7 @@
 package br.com.todolistAPI.controllers;
 
 import br.com.todolistAPI.DTOs.TaskCreateDTO;
+import br.com.todolistAPI.DTOs.TaskResponseDTO;
 import br.com.todolistAPI.DTOs.TaskUpdateDTO;
 import br.com.todolistAPI.domain.task.Task;
 import br.com.todolistAPI.services.TaskService;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +56,13 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
+    @Operation(summary = "Obtém tarefas pelo nome de uma tag", security = { @SecurityRequirement(name = "bearer-key") })
+    @GetMapping("/tag_name")
+    public ResponseEntity<List<Task>> getByTagName(@RequestParam (value = "q") String tagName){
+        List<Task> tasks = taskService.getByTagName(tagName);
+        return ResponseEntity.ok(tasks);
+    }
+
     @Operation(summary = "Obtém tarefas por data de criação", security = { @SecurityRequirement(name = "bearer-key") })
     @GetMapping("/creation_date")
     public ResponseEntity<List<Task>> getByCreationDate(@RequestParam (value = "q") LocalDate creationDate){
@@ -63,9 +72,9 @@ public class TaskController {
 
     @Operation(summary = "Atualiza uma tarefa", security = { @SecurityRequirement(name = "bearer-key") })
     @PutMapping("/{taskId}")
-    public ResponseEntity<String> putTask(@PathVariable UUID taskId, @RequestBody @Valid TaskUpdateDTO taskUpdateDTO) {
-        taskService.putTask(taskId, taskUpdateDTO);
-        return ResponseEntity.ok("Updated successfully");
+    public ResponseEntity<TaskResponseDTO> putTask(@PathVariable UUID taskId, @RequestBody @Valid TaskUpdateDTO taskUpdateDTO) {
+        TaskResponseDTO taskResponse = taskService.putTask(taskId, taskUpdateDTO);
+        return new ResponseEntity<>(taskResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "Deleta uma tarefa", security = { @SecurityRequirement(name = "bearer-key") })
@@ -74,6 +83,4 @@ public class TaskController {
         taskService.deleteTask(id);
         return ResponseEntity.ok("Deleted successfully");
     }
-
-
 }
