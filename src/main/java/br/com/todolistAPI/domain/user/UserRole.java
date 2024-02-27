@@ -17,7 +17,7 @@ public enum UserRole {
         return role;
     }
 
-    public static boolean verifyRole(UserRole role){
+    public static boolean isRole(UserRole role){
         return Arrays.stream(UserRole.values())
                 .anyMatch(userRole -> userRole.getRole().equalsIgnoreCase(role.getRole()));
     }

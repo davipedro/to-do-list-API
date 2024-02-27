@@ -34,7 +34,7 @@ public class AuthenticationService implements UserDetailsService {
         if (repository.findByUsername(data.login()) != null) throw new AlreadyRegisteredUserException("User already registered");
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        if (!UserRole.verifyRole(role)) throw new RoleNotFoundException("Role not found");
+        if (!UserRole.isRole(role)) throw new RoleNotFoundException("Role not found");
 
         User newUser = new User(data.login(), encryptedPassword, role);
         repository.save(newUser);
@@ -46,7 +46,7 @@ public class AuthenticationService implements UserDetailsService {
             throw new RootAlreadyRegistered("A root is already registered, could not have more than one root");
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        if (!UserRole.verifyRole(role)) throw new RoleNotFoundException("Role not found");
+        if (!UserRole.isRole(role)) throw new RoleNotFoundException("Role not found");
 
         User newUser = new User(data.login(), encryptedPassword, role);
         repository.save(newUser);
