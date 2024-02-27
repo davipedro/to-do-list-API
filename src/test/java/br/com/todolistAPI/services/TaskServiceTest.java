@@ -2,6 +2,8 @@ package br.com.todolistAPI.services;
 
 import br.com.todolistAPI.DTOs.TaskCreateDTO;
 import br.com.todolistAPI.DTOs.TaskUpdateDTO;
+import br.com.todolistAPI.domain.task.Tag;
+import br.com.todolistAPI.domain.task.Priority;
 import br.com.todolistAPI.domain.task.Task;
 import br.com.todolistAPI.exceptions.task.TaskNotFoundException;
 import br.com.todolistAPI.repositories.TaskRepository;
@@ -13,7 +15,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,10 +40,11 @@ class TaskServiceTest {
 
     @Test
     void createTask_ShouldCreateTask_WhenPassedDtoValuesAreCorrect() {
+        List<Tag> lista = new ArrayList<>();
         LocalDate conclusionDate = LocalDate.of(2024,1,3);
-        TaskCreateDTO taskToSave = new TaskCreateDTO("title","description",conclusionDate);
+        TaskCreateDTO taskToSave = new TaskCreateDTO("title","description",conclusionDate, lista, Priority.HIGH);
 
-        Task task = new Task(taskToSave);
+        Task task = new Task(taskToSave.title(), taskToSave.description(), taskToSave.conclusionDate(), taskToSave.tags(), taskToSave.priority());
 
         Assertions.assertEquals(taskToSave.title(), task.getTitle());
         Assertions.assertEquals(taskToSave.description(), task.getDescription());
@@ -93,7 +98,7 @@ class TaskServiceTest {
     void putTask_ShouldUpdateTask_WhenTaskDtoFieldsAreNotEmpty(){
         Task task = new Task();
         LocalDate localDate = mock(LocalDate.class);
-        TaskUpdateDTO taskViewDTO = new TaskUpdateDTO("title","description",localDate, false);
+        TaskUpdateDTO taskViewDTO = new TaskUpdateDTO("title","description",localDate, false, Collections.emptyList() ,Priority.HIGH);
 
         if (!(taskViewDTO.title().isEmpty())) task.setTitle(taskViewDTO.title());
         if (!(taskViewDTO.description().isEmpty())) task.setDescription(taskViewDTO.description());
