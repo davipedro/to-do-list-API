@@ -1,5 +1,7 @@
 package br.com.todolistAPI.exceptions;
 
+import br.com.todolistAPI.exceptions.tag.TagCouldNotBeCreated;
+import br.com.todolistAPI.exceptions.tag.TagNameAlreadyExistsException;
 import br.com.todolistAPI.exceptions.task.TaskCouldNotBeCreated;
 import br.com.todolistAPI.exceptions.task.TaskNotFoundException;
 import br.com.todolistAPI.exceptions.user.AlreadyRegisteredUserException;
@@ -59,5 +61,19 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.
                 badRequest()
                 .body("You cannot delete users with administrator permissions from this endpoint");
+    }
+
+    @ExceptionHandler(TagCouldNotBeCreated.class)
+    private ResponseEntity<String> TagCreationException(){
+        return ResponseEntity.
+                badRequest()
+                .body("The tag could not be created, check the properties values");
+    }
+
+    @ExceptionHandler(TagNameAlreadyExistsException.class)
+    private ResponseEntity<String> TagNameAlreadyExist(){
+        return ResponseEntity.
+                badRequest()
+                .body("Already have a tag with this name");
     }
 }
