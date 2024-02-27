@@ -35,7 +35,7 @@ public class UserController {
         this.authenticationService = authenticationService;
     }
 
-    @Operation(summary = "Permite o login de um usuários já cadastrados")
+    @Operation(summary = "Permite o login de um usuário já cadastrado")
     @PostMapping("/auth/login")
     public ResponseEntity<Object> login (@RequestBody @Valid AuthenticationDTO data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
@@ -46,7 +46,7 @@ public class UserController {
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
-    @Operation(summary = "Permite cadastro de usuários com acesso básico")
+    @Operation(summary = "Permite cadastro de usuário com acesso básico")
     @PostMapping("/auth/register")
     public ResponseEntity<Object> register(@RequestBody @Valid RegisterDTO registerDTO){
         authenticationService.register(registerDTO, UserRole.USER);
