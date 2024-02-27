@@ -40,6 +40,11 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "api/v1/admin/admins").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "api/v1/root-admin/auth/admin-register").hasRole("ROOT")
                         .requestMatchers(HttpMethod.POST, "api/v1/root-admin/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/v1/tags").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT, "api/v1/tags/{tagId}").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "api/v1/tags/{tagId}").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "api/v1/tags/{userId}").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "api/v1/tags/{userId}/{tagId}").hasRole("USER")
                         .anyRequest().permitAll())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
