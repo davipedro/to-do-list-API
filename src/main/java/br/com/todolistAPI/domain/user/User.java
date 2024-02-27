@@ -1,5 +1,6 @@
 package br.com.todolistAPI.domain.user;
 
+import br.com.todolistAPI.domain.task.Tag;
 import br.com.todolistAPI.domain.task.Task;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +26,8 @@ public class User implements UserDetails {
     private UserRole role;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Task> tasks = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tag> tags;
 
     public User(String username, String password) {
         this.username = username;
@@ -76,6 +79,10 @@ public class User implements UserDetails {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public List<Tag> getCustomTags() {
+        return tags;
     }
 
     @Override
