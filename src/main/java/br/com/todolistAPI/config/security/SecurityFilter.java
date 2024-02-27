@@ -1,5 +1,6 @@
 package br.com.todolistAPI.config.security;
 
+import br.com.todolistAPI.exceptions.user.UserNotFoundException;
 import br.com.todolistAPI.repositories.AuthenticationRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -38,8 +39,9 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = recoverToken(request);
         if (token != null){
-            var username = tokenService.validateToken(token);
-            UserDetails user = authenticationRepository.findByUsername(username);
+            String userId = tokenService.validateToken(token);
+            UserDetails user = authenticationRepository.findById(userId)
+                    .orElseThrow(UserNotFoundException::new);
 
             var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
