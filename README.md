@@ -107,6 +107,54 @@ A API possui os seguintes endpoints:
 },
 ```
 
+# Banco de dados
+1. **Instale o PostgreSQL**:
+   - Certifique-se de que o PostgreSQL está instalado na sua máquina.
+
+2. **Crie um Banco de Dados**:
+   - Abra o terminal ou o prompt de comando.
+   - Acesse o psql, a interface de linha de comando do PostgreSQL.
+   - Execute o comando abaixo para criar um banco de dados chamado `todolist_api`:
+
+     ```sh
+     createdb todolist_api
+     ```
+
+   - Alternativamente, você pode usar o psql diretamente para criar o banco de dados:
+
+     ```sh
+     psql -U postgres -c "CREATE DATABASE todolist_api;"
+     ```
+
+   - Certifique-se de que o usuário PostgreSQL (por padrão, `postgres`) tem as permissões necessárias para criar bancos de dados.
+
+3. **Configurar as Variáveis de Ambiente**:
+   - Configure as variáveis de ambiente do seu sistema operacional. Você pode fazer isso adicionando as seguintes linhas ao arquivo de configuração de ambiente do seu sistema:
+
+     **No Linux/MacOS**:
+     ```sh
+     export DB_NAME=todolist_api
+     export POSTGRES_DB_USER=seu_usuario
+     export POSTGRES_DB_PASSWORD=sua_senha
+     ```
+
+     **No Windows**:
+     ```bat
+     setx DB_NAME todolist_api
+     setx POSTGRES_DB_USER=seu_usuario
+     setx POSTGRES_DB_PASSWORD=sua_senha
+     ```
+
+4. **Modificar o arquivo application.properties**:
+   - Você também pode configurar o banco de dados no arquivo `application.properties` do Spring Boot. Abra o arquivo `src/main/resources/application.properties` e altere as seguintes linhas:
+
+   **application.properties**
+   ```properties
+   spring.datasource.username=${DB_USER}
+   spring.datasource.password=${DB_PASSWORD}
+   ```
+   Altere o "${DB_USER}" e "${DB_PASSWORD}" pelo seu usuário e senha respectivamente.
+
 # Sobre o user
 O user é o usuário comum, ele possui apenas permissões relacionadas a suas tarefas, sendo elas:
 + Criar tarefas
